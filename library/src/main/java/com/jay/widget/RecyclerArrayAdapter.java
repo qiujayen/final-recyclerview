@@ -44,7 +44,7 @@ public abstract class RecyclerArrayAdapter<T> extends RecyclerView.Adapter<Recyc
 
     @Override
     public int getItemCount() {
-        return mObjects.size();
+        return mObjects == null ? 0 : mObjects.size();
     }
 
     public List<T> getObjects() {
@@ -60,11 +60,13 @@ public abstract class RecyclerArrayAdapter<T> extends RecyclerView.Adapter<Recyc
     }
 
     public void add(@Nullable T object) {
+        if (mObjects == null) mObjects = new ArrayList<>();
         mObjects.add(object);
         notifyItemInserted(getItemCount() - 1);
     }
 
     public void addAll(@NonNull List<T> objects) {
+        if (mObjects == null) mObjects = new ArrayList<>();
         mObjects.addAll(objects);
         int size = objects.size();
         notifyItemRangeInserted(getItemCount() - size, size);
@@ -76,18 +78,25 @@ public abstract class RecyclerArrayAdapter<T> extends RecyclerView.Adapter<Recyc
     }
 
     public void insert(@Nullable T object, int index) {
+        if (mObjects == null) return;
         mObjects.add(index, object);
         notifyItemInserted(index);
     }
 
     public void remove(@Nullable T object) {
+        if (mObjects == null) return;
         int indexOf = mObjects.indexOf(object);
-        mObjects.remove(indexOf);
-        notifyItemRemoved(indexOf);
+        remove(indexOf);
+    }
+
+    public void remove(int position) {
+        if (mObjects == null) return;
+        mObjects.remove(position);
+        notifyItemRemoved(position);
     }
 
     public void clear() {
-        mObjects.clear();
+        if (mObjects != null) mObjects.clear();
         notifyDataSetChanged();
     }
 }
